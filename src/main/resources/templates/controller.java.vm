@@ -1,0 +1,116 @@
+package ${package.Controller};
+
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+
+	private final static Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
+	
+	@Autowired
+    private ${table.serviceName} _service;
+	
+	@RequestMapping("/save${entity}")
+    public ResultObj save${entity}(@RequestBody ${entity} model) {
+        try {
+            this._service.save(model);
+            return ResultObj.ADD_SUCCESS;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResultObj.ADD_FAIL;
+        }
+
+    }
+	
+	@RequestMapping("/del${entity}")
+    public ResultObj del${entity}(@RequestBody ${entity} model) {
+        try {
+            this._service.removeById(model);
+            return ResultObj.DEL_SUCCESS;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResultObj.DEL_FAIL;
+        }
+
+    }
+	
+	@RequestMapping("/update${entity}")
+    public ResultObj update${entity}(@RequestBody ${entity} model) {
+        try {
+            this._service.updateById(model);
+            return ResultObj.UPDATE_SUCCESS;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResultObj.UPDATE_FAIL;
+        }
+
+    }
+
+    /*
+    * 不分页查询
+    * */
+    @RequestMapping("/select${entity}List")
+    public DataGridView select${entity}List(@RequestBody ${entity} model) {
+        try {
+            QueryWrapper queryWrapper = new QueryWrapper(model);
+            List<${entity}> list = this._service.list(queryWrapper);
+            return new DataGridView(Constast.OK, Constast.MSG_OK, (long) list.size(), list);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new DataGridView(Constast.FAIL, Constast.MSG_ERROR, e.getMessage());
+        }
+
+    }/*
+    * 分页查询
+    * */
+    @RequestMapping("/select${entity}ListByPage")
+    public DataGridView select${entity}ListByPage(@RequestBody ${entity} model) {
+        try {
+
+            Page<${entity}> page = new Page(model.getPage(),model.getLimit());
+            QueryWrapper queryWrapper = new QueryWrapper(model);
+            IPage page1 = this._service.page(page, queryWrapper);
+            return new DataGridView(Constast.OK, Constast.MSG_OK, (long) page1.getRecords().size(), page1);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new DataGridView(Constast.FAIL, Constast.MSG_ERROR, e.getMessage());
+        }
+
+    }
+
+
+}
+
+#end

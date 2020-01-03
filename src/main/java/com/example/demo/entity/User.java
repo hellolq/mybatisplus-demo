@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
@@ -24,6 +25,11 @@ import lombok.experimental.Accessors;
 public class User implements Serializable {
 
     private static final long serialVersionUID=1L;
+
+    @TableField(exist = false)
+    private Integer page=1;
+    @TableField(exist = false)
+    private Integer limit=5;
 
     /**
      * id主键

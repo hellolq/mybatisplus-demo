@@ -36,9 +36,10 @@ public class MPGenerator {
     private static final String driverName = "com.mysql.cj.jdbc.Driver";
     private static final String userName = "root";
     private static final String password = "root";
-    private static final String table_name = "sys_user";//对应的表
+    private static final String table_name = "sys_dept";//对应的表
 
     public static void main(String[] args) {
+
 
         // 数据源配置
         setDataSource();
@@ -50,7 +51,7 @@ public class MPGenerator {
         setStrategy();
 
         //执行
-        mpg.execute();
+        // mpg.execute();
 
 
 
@@ -68,6 +69,7 @@ public class MPGenerator {
     private static void setGlobalConfig() {
         URL urlPath = Thread.currentThread().getContextClassLoader().getResource("");
         String projectPath = System.getProperty("user.dir");
+        //String projectPath ="G:/11/source";
         gc.setOutputDir(projectPath + "/src/main/java");//代码生成位置
         gc.setFileOverride(true);//覆盖已有文件
         gc.setAuthor(author);
@@ -104,6 +106,8 @@ public class MPGenerator {
         // templateConfig.setEntity("templates/entity2.java");
         // templateConfig.setService();
         // templateConfig.setController();
+        templateConfig.setController("templates/controller.java");
+        templateConfig.setEntity("templates/entity.java");
 
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
